@@ -323,19 +323,19 @@ end
     #-----------------------
     p_q_w = plot(range(0.0, 150 .* 86400 ./ equations.tᵣ, 150*12) ./ (86400 ./ equations.tᵣ), equations.q₀ * [Q_s(i, 0.5*(equations.xb+equations.xa), equations) for i in range(0.0, 150 .* 86400 ./ equations.tᵣ, 150*12)],
                         title = " ", legende = false, size=(700, 550),
-                        linecolor=:black, linestyle=:solid,
+                        linecolor=:green, linestyle=:solid,
                         xlabel="t (days)", ylabel="Irradiance (W/m^2)", label = "")
     savefig(p_q_w, joinpath(plot_dir4, "q_window.png"))
     #-----------------------
     p_q_w = plot(range(0.0, 24, 200), equations.q₀ * [Q_s(i, 0.5*(equations.xb+equations.xa), equations) for i in range(0.0, 86400 ./ equations.tᵣ, 200)],
                         title = " ", legende = false, size=(700, 550),
-                        linecolor=:black, linestyle=:solid,
+                        linecolor=:green, linestyle=:solid,
                         xlabel="t (h)", ylabel="Irradiance (W/m^2)", label = "")
     savefig(p_q_w, joinpath(plot_dir4, "q_window_day1.png"))
     #-----------------------
     p_q_w = plot(range(0.0, 24, 200), equations.q₀ * [Q_s(i, 0.5*(equations.xb+equations.xa), equations) for i in range(74 * 86400 ./ equations.tᵣ, 75 * 86400 ./ equations.tᵣ, 200)],
                         title = " ", legende = false, size=(700, 550),
-                        linecolor=:black, linestyle=:solid,
+                        linecolor=:green, linestyle=:solid,
                         xlabel="t (h)", ylabel="Irradiance (W/m^2)", label = "")
     savefig(p_q_w, joinpath(plot_dir4, "q_window_day75.png"))
     #-----------------------

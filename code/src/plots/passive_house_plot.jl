@@ -262,13 +262,13 @@ end
     I = LinearInterpolation([0.0, equations.xa - 1e-8, equations.xa, equations.xb, equations.xb + 1e-8, 1.0], [0.0, 0.0, 1.0, 1.0, 0.0, 0.0])
     p_q_0 = plot(space2unscaled.(range(0,1,length(nodes)), equations), equations.q₀ .* [I(x) .* Q_s(0.0, x, equations) for x in range(0,1,length(nodes))],
                         title = " ", legende = false, size=(700, 550),
-                        linecolor=:black, linestyle=:solid,
+                        linecolor=:green, linestyle=:solid,
                         xlabel="x (m)", ylabel="Irradiance (W/m^2)", label = "")
     savefig(p_q_0, joinpath(plot_dir4, "q_midnight.png"))
     #----------------------- 
     p_q_12 = plot(space2unscaled.(range(0,1,length(nodes)), equations), equations.q₀ .* [I(x) .* Q_s(0.5 * 86400 ./ equations.tᵣ, x, equations) for x in range(0,1,length(nodes))],
                         title = " ", legende = false, size=(700, 550),
-                        linecolor=:black, linestyle=:solid,
+                        linecolor=:green, linestyle=:solid,
                         xlabel="x (m)", ylabel="Irradiance (W/m^2)", label = "")
     savefig(p_q_12, joinpath(plot_dir4, "q_noon.png"))
     #-----------------------

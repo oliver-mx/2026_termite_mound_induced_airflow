@@ -10,8 +10,7 @@ All output files of executed scripts are saved inside the `out` directory.
 The following List describes which script creates which figure(s).
 * Figures 2(a), 2(b): `r-h_simulations_plot.jl`
 * Figures 3(a), 3(b), 3(c), 3(d), 4(a), 4(b): `optimal_mound_simulation.jl`
-* Figures 6(a), 6(b): `passive_house_simulation.jl`
-* Figures 7(a), 7(b): `winter_simulation.jl`
+* Figures 6(a), 6(b), 7(a), 7(b): `winter_simulation.jl`
 
 The resulting figures are then saved as .png files in the respective folder within the `out` directory.
 
@@ -42,7 +41,7 @@ Open a terminal in the `code` directory and run
 bash> julia optimisation.jl 4
 ```
 
-Similar to `optimal_mound_simulation.jl` the file `passive_house_simulation.jl` simulates a full day of the passive house presended in Pak et al. (2009).
+Similar to `optimal_mound_simulation.jl` the file `passive_house_simulation.jl` simulates a full day of the passive house presented in Pak et al. (2009).
 
 ```julia
 julia> include("passive_house_simulation.jl")

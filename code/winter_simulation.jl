@@ -1,7 +1,7 @@
 # Simulates 150 days of the passive house design from Pak et al. (2009).
 # Air and soil temperature are similar to: Oktober 2024 - March 2025 weather data from Hamburg, Germany.
 # 
-# Runtime: ≈ 40000s
+# Runtime: ≈ 20000s
 # 
 
 # using TermiteMoundInducedAirflowTrixi.jl
