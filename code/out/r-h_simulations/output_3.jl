@@ -497,7 +497,3 @@
     L2_error = vcat(L2_error, 1.7239869977325692 )
     Vel_switches = vcat(Vel_switches, 0.0 )
     #
-
-    return r, h, L2_error, Vel_switches
-end
-#------------------------------------------------------------------------------

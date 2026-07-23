@@ -350,6 +350,6 @@ end
 
 #------------------------------------------------------------------------------
 ### Create Plots ###
-plot_solution(plot_dir, nodes, t, rho, v, T, Ti, Tu, p0, Tinside, equations)
 plot_profiles(plot_dir, nodes, t, equations)
+plot_solution(plot_dir, nodes, t, rho, v, T, Ti, Tu, p0, Tinside, equations)
 #------------------------------------------------------------------------------

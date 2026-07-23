@@ -167,15 +167,13 @@ end
     rb = [2.8448, 1.3208, 2.7940, 1.7780, 1.6764, 2.0828, 1.1176] ./ 2 # 1.1684, 3.1496, 3.0480,
     p_V = scatter!(p_V, rb, hb, ones(length(hb)), marker=:circle, markersize=6, color=:green, label="Data")
     p_V = scatter(p_V, [0.6], [2.0], [1.0], marker=:diamond, markersize=6, color=:red, label="Reference")
-    savefig(p_V, joinpath(plot_dir, "V.png"))
-
     p_Pos = surface(radius, height, Pos, grid = true,
                     title="", legend = :top, size=(700, 550),
                     colorbar_title=" ", colormap = :viridis,
                     ylim = (0.5, 2.5), xlim = (0.3, 1.5), camera=(0, 90.0),
                     label = "", xlabel="", ylabel="", zlabel="", zticks=nothing);        
     savefig(p_Pos, joinpath(plot_dir, "i.png"))
-
+    savefig(p_V, joinpath(plot_dir, "V.png"))
     return nothing
 end
 

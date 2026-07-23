@@ -97,7 +97,7 @@ dg = DGSEM(polydeg = 4, surface_flux = flux_ranocha, volume_integral = VolumeInt
 
 mesh = TreeMesh((0.0,), (1.0,), initial_refinement_level = 6, n_cells_max = 1000, periodicity = true) 
 
-semi = SemidiscretizationHyperbolic(mesh, equations, initial_condition, dg, source_terms = source_terms);
+semi = SemidiscretizationHyperbolic(mesh, equations, initial_condition, dg, source_terms = source_terms, boundary_conditions = boundary_condition_periodic);
 
 ###############################################################################
 # ODE solvers, callbacks etc.

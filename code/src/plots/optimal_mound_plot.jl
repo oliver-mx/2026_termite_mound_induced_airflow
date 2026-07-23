@@ -369,6 +369,6 @@ end
 #------------------------------------------------------------------------------
 ### Create Plots ###
 plot_solution(plot_dir, nodes, t, rho, v, T, Ti, Tu, p0, equations)
-plot_experiment(plot_dir, nodes, t, rho, v, T, Ti, Tu, equations)
 plot_profiles(plot_dir, nodes, t, equations)
+plot_experiment(plot_dir, nodes, t, rho, v, T, Ti, Tu, equations)
 #------------------------------------------------------------------------------
