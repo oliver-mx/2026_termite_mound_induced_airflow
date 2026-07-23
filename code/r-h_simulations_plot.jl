@@ -7,7 +7,7 @@
 #
 
 # using TermiteMoundInducedAirflowTrixi.jl
-using Trixi, OrdinaryDiffEqLowStorageRK, Interpolations, QuadGK, FastGaussQuadrature, Plots
+using Trixi, Plots, Interpolations, QuadGK
 using Trixi: AbstractEquations, @muladd
 import Interpolations: Line
 import Trixi: flux_ranocha, ln_mean, inv_ln_mean, flux, varnames, cons2cons, cons2prim, prim2cons, cons2entropy, max_abs_speeds
