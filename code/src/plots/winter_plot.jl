@@ -2,7 +2,7 @@
 # 
 
 # using TermiteMoundInducedAirflowTrixi.jl
-using Trixi, Plots, Interpolations, QuadGK
+using Trixi, OrdinaryDiffEqLowStorageRK, Interpolations, QuadGK, FastGaussQuadrature, Plots
 using Trixi: AbstractEquations, @muladd
 import Interpolations: Line
 import Trixi: flux_ranocha, ln_mean, inv_ln_mean, flux, varnames, cons2cons, cons2prim, prim2cons, cons2entropy, max_abs_speeds
@@ -220,18 +220,18 @@ nodes, t, rho, v, T, Ti, Tu, p0, Tinside = read_output()
             camera=(0, 90), colorbar_title=" ", yticks=[0, 50, 100, 150], zticks=nothing, colorbar = true)  
     savefig(p_Tu, joinpath(plot_dir2, "T_u.png"))
     #-----------------------
-    surface(x, y, Z1[], c = cmap, xlabel="x (m)", ylabel="       t [h]", zlabel="u (cm/s)", title="", colorbar = false)
+    surface(y, x, Z1[], c = cmap, xlabel="x (m)", ylabel="       t [h]", zlabel="u (cm/s)", title="", colorbar = false)
     cmap = cgrad([:cyan, :white, :green], rev=true)
     #cmap = cgrad([:cyan, :lightgray, :green], rev=true)
-    p_u = surface(x, y, Z1[], 
+    p_u = surface(y, x, Z1[], 
                     title = " ", legende = false, size=(700, 550),
                     c = cmap, 
                     xlabel="x (m)", ylabel=ylabell, zlabel="u (cm/s)")
-        p_u = surface!(p_u, x .+ 100, y, fill(V_max, length(time),length(time)), c = cmap, label = "")
-        p_u = surface!(p_u, x .+ 100, y, fill(V_min, length(time),length(time)), c = cmap, label = "", xlim=(0.0, equations.L))   
+        p_u = surface!(p_u, y, x .+ 100, fill(V_max, length(time),length(time)), c = cmap, label = "")
+        p_u = surface!(p_u, y, x .+ 100, fill(V_min, length(time),length(time)), c = cmap, label = "", ylim=(0.0, equations.L))    
     savefig(p_u, joinpath(plot_dir, "u.png"))
     p_u = plot!(p_u, xlabel="", ylabel="", zlabel="",
-            camera=(0, 90), colorbar_title=" ", yticks=[0, 50, 100, 150], zticks=nothing, colorbar = true) 
+            camera=(0, 90.001), colorbar_title=" ", xticks=[0, 50, 100, 150], zticks=nothing, colorbar = true) 
     savefig(p_u, joinpath(plot_dir2, "u.png"))
     #-----------------------
     return nothing

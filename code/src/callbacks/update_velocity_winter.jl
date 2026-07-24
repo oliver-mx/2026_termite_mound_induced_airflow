@@ -196,6 +196,16 @@ end
     integrator.u[2:5:end-3] = v1
     integrator.u[3:5:end-2] .= p0
     #-----------------------
+    if 0 == 1
+        a_now = update_velocity_callback.a()
+        a_now = if t_prev == tspan[1]
+            1
+        else
+            a_now
+        end
+        a_new = write_plot_data(a_now, integrator, tspan, nodes, t, ti, 151, rho, v1, v1_prev, T, Ti, Tu, p0, equations)
+        update_velocity_callback.a = isa(a_new, Real) ? Returns(a_new) : a_new
+    end
     rho_final, v1_final, T_final, Ti_final, p0_final, Tu_final, T_inside_final =    if integrator.t == tspan[end]
                                                                                         callback_out(integrator, tspan, nodes, t, ti, rho, v1, T, Ti, Tu, p0, equations)
                                                                                     else
@@ -210,6 +220,93 @@ end
     update_velocity_callback.T_inside_s = isa(T_inside_final, Real) ? Returns(T_inside_final) : T_inside_final                                                                              
     #-----------------------
     return integrator
+end
+
+@inline function write_plot_data(a, integrator, tspan, nodes, t, ti, max_visnodes, rho, v1, v1_prev, T, Ti, Tu, p0, equations::PassiveHouseEquations1D)
+    #-----------------------
+    vis_index = range(tspan[1], tspan[end], max_visnodes)
+    #-----------------------
+    # save output:
+    output_dir = joinpath(@__DIR__, "..//..//out//winter_simulation")
+    vis_status = if integrator.tprev ≤ tspan[1] && integrator.t > tspan[1]
+        day = floor((integrator.t + 0.01) * equations.tᵣ / 86400, digits=0)
+        x_s = space2unscaled.(range(nodes[1], nodes[end], 59), equations)
+        rho_LI = bspline2linear(nodes, rho, t, ti, equations)
+        ρᵣ = 1.17
+        rho_s = ρᵣ .* [rho_LI(x) for x in range(nodes[1], nodes[end], 59)]
+        v1_LI = bspline2linear(nodes, v1, t, ti, equations)
+        v_s = vel2unscaled.([v1_LI(x) for x in range(nodes[1], nodes[end], 59)], equations)
+        T_LI = bspline2linear(nodes, T, t, ti, equations)
+        T_s = temp2unscaled.([T_LI(x) for x in range(nodes[1], nodes[end], 59)], equations)
+        Ti_LI = bspline2linear(nodes, Ti, t, ti, equations)
+        Ti_s = temp2unscaled.([Ti_LI(x) for x in range(nodes[1], nodes[end], 59)], equations)
+        Tu_LI = bspline2linear(nodes, Tu, t, ti, equations)
+        Tu_s = temp2unscaled.([Tu_LI(x) for x in range(nodes[1], nodes[end], 59)], equations)
+        Tinside = [temp2unscaled( quadgk(x -> Ti_LI(x), equations.xa, equations.xc)[1] / (equations.xc - equations.xa), equations)]
+        string1 = createString1(x_s, time2unscaled(integrator.t, equations), rho_s, v_s, T_s, Ti_s, Tu_s, p0, Tinside)
+        filename = "output_$(day+1)"
+        filename = filename[1:end-2] * ".jl"
+        open(joinpath(output_dir, filename), "w") do file
+                        write(file, string1)
+                        flush(file)
+        end
+        1.0
+    elseif integrator.t > vis_index[a]
+        day = floor(integrator.t * equations.tᵣ / 86400, digits=0)
+        rho_LI = bspline2linear(nodes, rho, t, ti, equations)
+        ρᵣ = 1.17
+        rho_s = ρᵣ .* [rho_LI(x) for x in range(nodes[1], nodes[end], 59)]
+        v1_LI = bspline2linear(nodes, v1, t, ti, equations)
+        v_s = vel2unscaled.([v1_LI(x) for x in range(nodes[1], nodes[end], 59)], equations)
+        T_LI = bspline2linear(nodes, T, t, ti, equations)
+        T_s = temp2unscaled.([T_LI(x) for x in range(nodes[1], nodes[end], 59)], equations)
+        Ti_LI = bspline2linear(nodes, Ti, t, ti, equations)
+        Ti_s = temp2unscaled.([Ti_LI(x) for x in range(nodes[1], nodes[end], 59)], equations)
+        Tu_LI = bspline2linear(nodes, Tu, t, ti, equations)
+        Tu_s = temp2unscaled.([Tu_LI(x) for x in range(nodes[1], nodes[end], 59)], equations)
+        Tinside = [temp2unscaled( quadgk(x -> Ti_LI(x), equations.xa, equations.xc)[1] / (equations.xc - equations.xa), equations)]
+        string2 = createString2(time2unscaled(integrator.t, equations), rho_s, v_s, T_s, Ti_s, Tu_s, p0, Tinside) 
+        filename = "output_$(day+1)"
+        filename = filename[1:end-2] * ".jl"
+        open(joinpath(output_dir, filename), "a") do file
+                        write(file, string2)
+                        flush(file)
+        end
+        1.0
+    elseif integrator.t == tspan[end]
+        day = floor((integrator.tprev) * equations.tᵣ / 86400, digits=0)
+        rho_LI = bspline2linear(nodes, rho, t, ti, equations)
+        ρᵣ = 1.17
+        rho_s = ρᵣ .* [rho_LI(x) for x in range(nodes[1], nodes[end], 59)]
+        v1_LI = bspline2linear(nodes, v1, t, ti, equations)
+        v_s = vel2unscaled.([v1_LI(x) for x in range(nodes[1], nodes[end], 59)], equations)
+        T_LI = bspline2linear(nodes, T, t, ti, equations)
+        T_s = temp2unscaled.([T_LI(x) for x in range(nodes[1], nodes[end], 59)], equations)
+        Ti_LI = bspline2linear(nodes, Ti, t, ti, equations)
+        Ti_s = temp2unscaled.([Ti_LI(x) for x in range(nodes[1], nodes[end], 59)], equations)
+        Tu_LI = bspline2linear(nodes, Tu, t, ti, equations)
+        Tu_s = temp2unscaled.([Tu_LI(x) for x in range(nodes[1], nodes[end], 59)], equations)
+        Tinside = [temp2unscaled( quadgk(x -> Ti_LI(x), equations.xa, equations.xc)[1] / (equations.xc - equations.xa), equations)]
+        string2 = createString2(time2unscaled(integrator.t, equations), rho_s, v_s, T_s, Ti_s, Tu_s, p0, Tinside) 
+        string3 = createString3()
+        filename = "output_$(day+1)"
+        filename = filename[1:end-2] * ".jl"
+        open(joinpath(output_dir, filename), "a") do file
+                        write(file, string2 * string3)
+                        flush(file)
+        end
+        1.0
+    else
+       0.0
+    end
+    #-----------------------
+    if vis_status == 1.0
+        a_new = a + 1
+    else
+        a_new = a
+    end
+    #-----------------------
+    return a_new
 end
 
 @inline function callback_out(integrator, tspan, nodes, t, ti, rho, v1, T, Ti, Tu, p0, equations::PassiveHouseEquations1D)
@@ -246,7 +343,7 @@ end
     Tu_str = writeString(Tu_s, 5)
     p0_str = writeString(p0, 5)
     Tinside_str = writeString(Tinside, 5)
-    string =  "## output.jl ##\n#\n# Winter_simulation\n#\n#------------------------------------------------------------------------------\n### read output ###\n@muladd @inline function read_output()\n    nodes = " * xnodes_str *"\n    #\n    t = " * t_str * "\n    rho = " * rho_str * "\n    v = " * v_str * "\n    T = " * T_str * "\n    Ti = " * Ti_str * "\n    Tu = " * Tu_str * "\n    p0 = " * p0_str * "\n    Tinside = " * Tinside_str * "\n    #\n"
+    string =  "## output.jl ##\n#\n# Winter_simulation\n#\n#------------------------------------------------------------------------------\n### read output ###\n@muladd @inline function read_output()\n    nodes = " * xnodes_str *"\n    #\n    t = " * t_str * "\n    rho = " * rho_str * "\n    v = " * v_str * "\n    T = " * T_str * "\n    Ti = " * Ti_str * "\n    p0 = " * p0_str * "\n    Tu = " * Tu_str * "\n    Tinside = " * Tinside_str * "\n    #\n"
     return string
 end
 
@@ -259,12 +356,12 @@ end
     Tu_str = writeString(Tu_s, 5)
     p0_str = writeString(p0, 5)
     Tinside_str = writeString(Tinside, 5)
-    string = "    t =  vcat(t," * t_str *")\n    rho = vcat(rho," * rho_str * ")\n    v = vcat(v," * v_str * ")\n    T =  vcat(T," * T_str * ")\n    Ti =  vcat(Ti," * Ti_str * ")\n    Tu =  vcat(Tu," * Tu_str * ")\n    p0 =  vcat(p0," * p0_str * ")\n    Tinside =  vcat(Tinside," * Tinside_str * ")\n    #\n"
+    string = "    t =  vcat(t," * t_str *")\n    rho = vcat(rho," * rho_str * ")\n    v = vcat(v," * v_str * ")\n    T =  vcat(T," * T_str * ")\n    Ti =  vcat(Ti," * Ti_str * ")\n    p0 =  vcat(p0," * Tu_str * ")\n    Tu =  vcat(Tu," * p0_str * ")\n    Tinside =  vcat(Tinside," * Tinside_str * ")\n    #\n"
     return string
 end   
 
 @inline function createString3()
-    string = "    return nodes, t, rho, v, T, Ti, Tu, p0, Tinside\nend\n#------------------------------------------------------------------------------\n"
+    string = "    return nodes, t, rho, v, T, Ti, p0, Tu Tinside\nend\n#------------------------------------------------------------------------------\n"
     return string
 end  
 
